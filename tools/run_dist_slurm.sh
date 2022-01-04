@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 # --------------------------------------------------------------------------------------------------------------------------
-# Deformable DETR
-# Copyright (c) 2020 SenseTime. All Rights Reserved.
-# Licensed under the Apache License, Version 2.0 [see LICENSE for details]
-# --------------------------------------------------------------------------------------------------------------------------
 # Modified from https://github.com/open-mmlab/mmdetection/blob/3b53fe15d87860c6941f3dda63c0f27422da6266/tools/slurm_train.sh
 # --------------------------------------------------------------------------------------------------------------------------
 
@@ -22,6 +18,7 @@ fi
 CPUS_PER_TASK=${CPUS_PER_TASK:-2}
 # CPUS_PER_TASK=2
 SRUN_ARGS=${SRUN_ARGS:-""}
+mkdir logs
 
 srun -p ${PARTITION} \
     --job-name=${JOB_NAME} \

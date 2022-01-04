@@ -17,25 +17,36 @@ import math
 # scheduler = torch.optim.lr_scheduler.LambdaLR( optimizer, lr_lambda=warm_up_with_cosine_lr)
 
 class MultiStepWarmupLR:
-    def __init__(self, decay_rate=0.1, lr_milestones=[20, 40], warm_up_epoch=5) -> None:
+    def __init__(self, decay_rate=0.1, lr_milestones=[20000, 40000], warm_up_steps=5000, min_decay_rate=0.01) -> None:
         self.deacy_rate = decay_rate
         self.lr_milestones = lr_milestones
-        self.warm_up_epoch = warm_up_epoch
+        self.warm_up_steps = warm_up_steps
+        self.min_decay_rate = min_decay_rate
 
-    def __call__(self, epoch):
-        if epoch < self.warm_up_epoch:
-            return (epoch+1)/self.warm_up_epoch
+    def __call__(self, steps):
+        if steps < self.warm_up_steps:
+            rate = (steps+1)/self.warm_up_steps
         else:
-            return self.deacy_rate ** len([m for m in self.lr_milestones if m <= epoch])
-
+            rate = self.deacy_rate ** len([m for m in self.lr_milestones if m <= steps])
+        # make sure lr is not too small
+        if rate <= self.min_decay_rate:
+            return self.min_decay_rate
+        else:
+            return rate
 
 class CosineWarmupLR:
-    def __init__(self, max_epoch=100, warm_up_epoch=5) -> None:
-        self.max_epoch = max_epoch
-        self.warm_up_epoch = warm_up_epoch
+    def __init__(self, max_T=100, warm_up_steps=5, min_decay_rate=0.01) -> None:
+        self.max_T = max_T
+        self.warm_up_steps = warm_up_steps
+        self.min_decay_rate = min_decay_rate
 
-    def __call__(self, epoch):
-        if epoch < self.warm_up_epoch:
-            return (epoch+1)/self.warm_up_epoch
+    def __call__(self, steps):
+        if steps < self.warm_up_steps:
+            rate = (steps+1)/self.warm_up_steps
         else:
-            return 0.5 * (math.cos((epoch - self.warm_up_epoch) / (self.max_epoch - self.warm_up_epoch) * math.pi) + 1)
+            rate = 0.5 * (math.cos((steps - self.warm_up_steps) / (self.max_T - self.warm_up_steps) * math.pi) + 1)
+        # make sure lr is not too small
+        if rate <= self.min_decay_rate:
+            return self.min_decay_rate
+        else:
+            return rate

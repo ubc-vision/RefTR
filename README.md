@@ -15,6 +15,10 @@ To install requirements:
 pip install -r requirements.txt
 ```
 
+```
+chmod +x tools/run_dist_slurm.sh 
+```
+
 ## Setting up dataset
 Flicker30k Entities: http://bryanplummer.com/Flickr30kEntities/
 
@@ -37,11 +41,10 @@ data
 │   └── vg
 ├── flickr30k
 │   └── f30k_images
-├── mscoco
-│   ├── val2017
-│   └── train2017
 ├── refcoco
+|   ├── anns
 │   ├── images
+|   │   ├──train2014  # images from train 2014
 │   ├── masks
 ├── referit
 │   ├── images

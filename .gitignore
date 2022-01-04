@@ -5,7 +5,7 @@
 ###
 exp_backup/*
 exps/*
-data/*
+data
 configs/VinVL_VQA_base/*.bin
 SAVED_MODEL/*
 

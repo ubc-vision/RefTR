@@ -21,6 +21,7 @@ import torch.nn.functional as F
 
 def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
                     data_loader: Iterable, optimizer: torch.optim.Optimizer,
+                    lr_scheduler: torch.optim.lr_scheduler._LRScheduler,
                     device: torch.device, epoch: int, max_norm: float = 0):
     model.train()
     criterion.train()
@@ -63,6 +64,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
         else:
             grad_total_norm = utils.get_total_grad_norm(model.parameters(), max_norm)
         optimizer.step()
+        lr_scheduler.step()
 
         metric_logger.update(loss=loss_value, **loss_dict_reduced_scaled, **loss_dict_reduced_unscaled)
         # metric_logger.update(class_error=loss_dict_reduced['class_error'])

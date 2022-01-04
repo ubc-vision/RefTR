@@ -36,7 +36,7 @@ def get_args_parser():
     parser.add_argument('--epochs', default=60, type=int)
     parser.add_argument('--lr_drop', default=40, type=int)
     parser.add_argument('--lr_drop_epochs', default=None, type=int, nargs='+')
-    parser.add_argument('--warm_up_epoch', default=10, type=int)
+    parser.add_argument('--warm_up_epoch', default=2, type=int)
     parser.add_argument('--lr_decay', default=0.1, type=float)
     parser.add_argument('--lr_schedule', default='StepLR', type=str)
     parser.add_argument('--clip_max_norm', default=0.1, type=float,
@@ -267,38 +267,25 @@ def main(args):
         optimizer = torch.optim.AdamW(param_dicts, lr=args.lr,
                                       weight_decay=args.weight_decay)
     if args.lr_schedule == 'StepLR':
-        lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, args.lr_drop)
-    elif args.lr_schedule == 'MultiStepWarmupLR':
+        lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, len(data_loader_train)*args.lr_drop)
+    elif args.lr_schedule == 'MultiStepWarmupLR':        
         lr_scheduler = torch.optim.lr_scheduler.LambdaLR(
-            optimizer, 
+            optimizer,
             lr_lambda=MultiStepWarmupLR(
-                decay_rate=args.lr_decay,
-                lr_milestones=args.lr_drop_epochs,
-                warm_up_epoch=args.warm_up_epoch
+                decay_rate=0.1,
+                lr_milestones=[len(data_loader_train)*x for x in args.lr_drop_epochs],
+                warm_up_steps=len(data_loader_train)*args.warm_up_epoch
             )
         )
     elif args.lr_schedule == 'CosineWarmupLR':
         lr_scheduler = torch.optim.lr_scheduler.LambdaLR(
             optimizer,
             lr_lambda=CosineWarmupLR(
-                max_epoch=args.epochs,
-                warm_up_epoch=args.warm_up_epoch
+                max_T=len(data_loader_train)*args.epochs,
+                warm_up_steps=len(data_loader_train)*args.warm_up_epoch
             )
         )
-
-    # print(model)
-    # print("base lr:", [n for n, p in model_without_ddp.named_parameters()
-    #              if not match_name_keywords(n, args.lr_backbone_names) 
-    #              and not match_name_keywords(n, args.lr_linear_proj_names) 
-    #              and not match_name_keywords(n, args.lr_text_model_names)
-    #              and p.requires_grad])
-    # print("backbone lr:", [n for n, p in model_without_ddp.named_parameters() 
-    #             if match_name_keywords(n, args.lr_backbone_names) 
-    #             and p.requires_grad])
-    # print("lr linear proj muly:", [n for n, p in model_without_ddp.named_parameters() 
-    #             if match_name_keywords(n, args.lr_linear_proj_names) 
-    #             and p.requires_grad])
-    # return
+    print("Steps per training epoch: ", len(data_loader_train))
 
     if args.distributed:
         if args.ablation != 'none':
@@ -345,7 +332,7 @@ def main(args):
                 print('Warning: (hack) args.override_resumed_lr_drop is set to True, so args.lr_drop would override lr_drop in resumed lr_scheduler.')
                 lr_scheduler.step_size = args.lr_drop
                 lr_scheduler.base_lrs = list(map(lambda group: group['initial_lr'], optimizer.param_groups))
-            lr_scheduler.step(lr_scheduler.last_epoch)
+            lr_scheduler.step(len(data_loader_train)*lr_scheduler.last_epoch)
             args.start_epoch = checkpoint['epoch'] + 1
         # TODO: We need to check the resumed model to make sure it is correct
         if 'best_val_acc' in checkpoint:
@@ -380,8 +367,8 @@ def main(args):
         if args.distributed:
             sampler_train.set_epoch(epoch)
         train_stats = train_one_epoch(
-            model, criterion, data_loader_train, optimizer, device, epoch, args.clip_max_norm)
-        lr_scheduler.step()
+            model, criterion, data_loader_train, optimizer, lr_scheduler, device, epoch, args.clip_max_norm)
+        # lr_scheduler.step()
         if args.output_dir:
             checkpoint_paths = [output_dir / 'checkpoint.pth']
             # extra checkpoint before LR drop and every 5 epochs
