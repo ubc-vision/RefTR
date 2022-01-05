@@ -17,6 +17,7 @@ python3.8 -u main_vg.py \
     --bert_model roberta-base\
     --img_size 640\
     --max_img_size 640\
+    --batch_size 16\
     --epochs 60\
     --lr_drop 40\
     --aux_loss\

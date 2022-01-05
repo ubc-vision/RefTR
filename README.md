@@ -58,7 +58,13 @@ data
 To train the model(s) in the paper, run this command:
 
 ```train
-python train.py --input-data <path_to_data> --alpha 10 --beta 20
+# using slurm system
+MASTER_PORT=${Master Port} GPUS_PER_NODE={GPU per node} ./tools/run_dist_slurm.sh RefTR ${Number Of GPU} ${config file name}
+```
+
+Example for training on Flickr30k Entities:
+```python
+MASTER_PORT=29501 GPUS_PER_NODE=4  ./tools/run_dist_slurm.sh  RefTR 4 configs/flickr30k/RefTR_flickr.sh 
 ```
 
 ## Evaluation
@@ -66,12 +72,15 @@ python train.py --input-data <path_to_data> --alpha 10 --beta 20
 To evaluate my model on ImageNet, run:
 
 ```eval
-python eval.py --model-file mymodel.pth --benchmark imagenet
+MASTER_PORT=${Master Port} GPUS_PER_NODE={GPU per node} ./tools/run_dist_slurm.sh RefTR ${Number Of GPU} ${config file name} --eval --resume=${path to checkpoint}
 ```
 
-## Pre-trained Models
+Example for evaluating:
+```python
+MASTER_PORT=29501 GPUS_PER_NODE=4  ./tools/run_dist_slurm.sh  RefTR 4 configs/flickr30k/RefTR_flickr.sh --eval --resume=./exps/flickr30k/checkpoint.pth
+```
 
-##  Bibtext
+## Bibtext
 
 If you find this code is useful for your research, please cite our paper
 

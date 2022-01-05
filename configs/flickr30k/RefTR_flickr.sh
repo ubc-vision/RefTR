@@ -15,7 +15,9 @@ python3.8 -u main_vg.py \
     --dec_layers 6\
     --img_size 640\
     --max_img_size 640\
+    --batch_size 16\
     --epochs 60\
+    --warm_up_epoch 5\
     --lr_schedule CosineWarmupLR\
     --aux_loss\
     --output_dir ${EXP_DIR} \
