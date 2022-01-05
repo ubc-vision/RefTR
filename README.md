@@ -2,11 +2,6 @@
 
 Code for paper "Referring Transformer: A One-step Approach to Multi-task Visual Grounding"
 
-TODO List:
-- [x] Release full code
-- [ ] Release pre-processed dataset annotations
-- [ ] Release pre-trained Models
-
 ## Requirements
 
 To install requirements:
@@ -55,30 +50,33 @@ data
 
 ## Training
 
-To train the model(s) in the paper, run this command:
-
+To train the model, run:
 ```train
 # using slurm system
 MASTER_PORT=${Master Port} GPUS_PER_NODE={GPU per node} ./tools/run_dist_slurm.sh RefTR ${Number Of GPU} ${config file name}
 ```
 
-Example for training on Flickr30k Entities:
+Example:
 ```python
 MASTER_PORT=29501 GPUS_PER_NODE=4  ./tools/run_dist_slurm.sh  RefTR 4 configs/flickr30k/RefTR_flickr.sh 
 ```
 
 ## Evaluation
 
-To evaluate my model on ImageNet, run:
-
+To evaluate the model, run:
 ```eval
 MASTER_PORT=${Master Port} GPUS_PER_NODE={GPU per node} ./tools/run_dist_slurm.sh RefTR ${Number Of GPU} ${config file name} --eval --resume=${path to checkpoint}
 ```
 
-Example for evaluating:
+Example:
 ```python
 MASTER_PORT=29501 GPUS_PER_NODE=4  ./tools/run_dist_slurm.sh  RefTR 4 configs/flickr30k/RefTR_flickr.sh --eval --resume=./exps/flickr30k/checkpoint.pth
 ```
+
+- [x] Release full code
+- [ ] Release pre-processed dataset annotations
+- [ ] Release pre-trained Models
+
 
 ## Bibtext
 
