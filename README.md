@@ -21,6 +21,12 @@ MSCOCO: http://mscoco.org/dataset/#overview
 
 Visual Genome Images: https://visualgenome.org/api/v0/api_home.html
 
+data/annotations: https://drive.google.com/file/d/19qJ8b5sxijKmtN0XG9leWbt2sPkIVqlc/view?usp=sharing
+
+refcoco/masks: https://drive.google.com/file/d/1oGUewiDtxjouT8Qp4dRzrPfGkc0LZaIT/view?usp=sharing
+
+refcoco/anns: https://drive.google.com/file/d/1Prhrgm3t2JeY68Ni_1Ig_a4dfZvGC9vZ/view?usp=sharing
+
 Extract dataset in the /data folder.(Tips: you can use softlinks to avoid putting data and code in the same directory.)
 The data/ folder should look like this:
 ```
@@ -73,10 +79,12 @@ Example:
 MASTER_PORT=29501 GPUS_PER_NODE=4  ./tools/run_dist_slurm.sh  RefTR 4 configs/flickr30k/RefTR_flickr.sh --eval --resume=./exps/flickr30k/checkpoint.pth
 ```
 
-- [x] Release full code
-- [ ] Release pre-processed dataset annotations
-- [ ] Release pre-trained Models
-
+## Pretrained checkpoint for refcoco res/rec
+| Checkpoint Name      | Dataset/Link | Description|
+| ----------- | ----------- | --- |
+| refcoco_SEG_PT_res50_6_epochs.pth  | [refcoco](https://drive.google.com/file/d/151XGTlGTbwGyQ6HMEn2sTEwEeFY9Csjx/view?usp=sharing) | Pretrained 6 epochs on VG |
+| refcoco+_SEG_PT_res50_6_epochs.pth | [refcoco+](https://drive.google.com/file/d/1KKd80NReZJ500G6pnY1iRXoWqhJRDn5T/view?usp=sharing) | Pretrained 6 epochs on VG |
+| refcocog_SEG_PT_res50_6_epochs.pth | [refcocog](https://drive.google.com/file/d/1oStrCvyJ2KyumXciMg6n8CdvefS9Qjsi/view?usp=sharing) | Pretrained 6 epochs on VG |
 
 ## Bibtext
 
