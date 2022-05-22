@@ -27,6 +27,8 @@ refcoco/masks: https://drive.google.com/file/d/1oGUewiDtxjouT8Qp4dRzrPfGkc0LZaIT
 
 refcoco/anns: https://drive.google.com/file/d/1Prhrgm3t2JeY68Ni_1Ig_a4dfZvGC9vZ/view?usp=sharing
 
+annotations_resc/vg/vg_all.pth: https://drive.google.com/file/d/1_GbWl0sSB1y26fFM9W7DDkXLRR8Ld3IH/view?usp=sharing
+
 Extract dataset in the /data folder.(Tips: you can use softlinks to avoid putting data and code in the same directory.)
 The data/ folder should look like this:
 ```
