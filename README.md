@@ -15,6 +15,8 @@ chmod +x tools/run_dist_slurm.sh
 ```
 
 ## Setting up dataset
+Resc annotations preparation: https://drive.google.com/file/d/1fVwdDvXNbH8uuq_pHD_o5HI7yqeuz0yS/view?usp=sharing
+
 Flicker30k Entities: http://bryanplummer.com/Flickr30kEntities/
 
 MSCOCO: http://mscoco.org/dataset/#overview
